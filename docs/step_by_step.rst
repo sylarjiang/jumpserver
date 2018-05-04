@@ -414,3 +414,53 @@ Jumpserver 会话管理-终端管理（http://192.168.244.144:8080/terminal/term
 
 后续的使用请参考 `快速入门 <admin_create_asset.html>`_
 如遇到问题可参考 `FAQ <faq.html>`_
+
+
+七. 配置 Nginx 整合各组件
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+$ vi /lib/systemd/system/jms.service   
+[Unit]
+Description=test deamon
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+Environment=VIRTUAL_ENV=/opt/py3/
+Environment=PATH=/opt/py3/bin:$PATH
+WorkingDirectory=/opt/jumpserver/
+ExecStart=/opt/py3/bin/python /opt/jumpserver/run_server.py all
+KillSignal=SIGQUIT
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+
+$ systemctl enable jms
+
+
+
+
+$ vi /lib/systemd/system/jms.service  coco.service
+[Unit]
+Description=test deamon
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+Environment=VIRTUAL_ENV=/opt/py3/
+Environment=PATH=/opt/py3/bin:$PATH
+WorkingDirectory=/opt/coco/
+ExecStart=/opt/py3/bin/python /opt/coco/run_server.py start
+ExecStop=/opt/py3/bin/python /opt/coco/run_server.py stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+$ systemctl enable coco
